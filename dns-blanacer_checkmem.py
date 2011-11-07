@@ -134,17 +134,12 @@ class DNSQuery:
 
   def respuesta(self, ip):
     packet=''
-    domain=('www.sk2.com.','www.sk3.com.','www.bs.com.')
-    if self.dominio not in domain:
-      print 'not in list transfer to global DNS !'
-      pass
-    else:
-      packet+=self.data[:2] + "\x81\x80"
-      packet+=self.data[4:6] + self.data[4:6] + '\x00\x00\x00\x00'   # Questions and Answers Counts
-      packet+=self.data[12:]                                         # Original Domain Name Question
-      packet+='\xc0\x0c'                                             # Pointer to domain name
-      packet+='\x00\x01\x00\x01\x00\x00\x00\x3c\x00\x04'             # Response type, ttl and resource data length -> 4 bytes
-      packet+=str.join('',map(lambda x: chr(int(x)), ip.split('.'))) # 4bytes of IP
+    packet+=self.data[:2] + "\x81\x80"
+    packet+=self.data[4:6] + self.data[4:6] + '\x00\x00\x00\x00'   # Questions and Answers Counts
+    packet+=self.data[12:]                                         # Original Domain Name Question
+    packet+='\xc0\x0c'                                             # Pointer to domain name
+    packet+='\x00\x01\x00\x01\x00\x00\x00\x3c\x00\x04'
+    packet+=str.join('',map(lambda x: chr(int(x)), ip.split('.'))) 
     return packet
 
 if __name__ == '__main__':
@@ -157,17 +152,20 @@ if __name__ == '__main__':
           infds,outfds,errfds = select.select([udps,],[],[])
           if len(infds) != 0:
             import random
+            import subprocess
             from bs import check_all_memcached,check_mysql_host
             data, addr = udps.recvfrom(1024)
             p=DNSQuery(data)
             check_func={}
             check_func["www.bs.com."]=check_mysql_host
             check_func["www.sk2.com."]=check_all_memcached
-#            if p.dominio == "www.bs.com.":
-#                ip='0.0.0.0'
-#            else:
-            ip="".join(random.sample(check_func[p.dominio](),1))
-            udps.sendto(p.respuesta(ip), addr)
+            if p.dominio not in check_func:
+                cmd="nslookup %s 202.96.209.133|grep -A 5 answer|awk -F: '/Address/{print $NF}'"%p.dominio
+                ip=subprocess.Popen(cmd,shell=True, stdout=subprocess.PIPE).communicate()[0].strip()
+                udps.sendto(p.respuesta(ip), addr)
+            else:
+                ip="".join(random.sample(check_func[p.dominio](),1))
+                udps.sendto(p.respuesta(ip), addr)
             print 'Respuesta: %s -> %s' % (p.dominio, ip)
           else:
             print 'no job'
