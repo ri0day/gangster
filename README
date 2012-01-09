@@ -1,1 +1,12 @@
-self made pice of code 
+|-- dns  #dns server with heathcheck
+|   |-- check.py    #check script
+|   |-- dns-blanacer_deamon.py  #dns server in deamon mode
+|   `-- dns-server_with-thread.py  #dns server in thread mode
+|-- memcache_interface          #memcache http interface
+|   |-- cgi_memcache.py         #memcache http interface write in cgi
+|   |-- gevent_memcache.py      #memcache http interface write with gevent
+|   `-- memcache_cli.sh         #memcache interface write in bash
+|-- pylucene_build_idx.py       #pylucene build index example
+|-- pylucene_search.py          #pylucene search example
+|-- qunar.py                    #fetch lowest price fly ticket on qunar.com
+`-- upload_fileserver.py        #simple upload server write in python cgi 
