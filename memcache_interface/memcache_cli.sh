@@ -2,8 +2,7 @@
 #filename cm.sh
 #author:wumin 
 #---Date:2011.12.29 pm---
-
-#notice:not suport kind of ubuntu and debian system.(debian not suport /dev/tcp/host/port stye ) 
+#notice:not suport kind of ubuntu and debian system.(debian not suport "/dev/tcp/host/port" style ) 
 
 
 usage() {
