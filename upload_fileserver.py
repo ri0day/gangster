@@ -1,8 +1,6 @@
 #!/usr/bin/python
 
-# Copyright Jon Berg , turtlemeat.com
-# Modified by nikomu @ code.google.com     
-
+   
 import string,cgi,time
 from os import curdir, sep
 from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
@@ -79,12 +77,7 @@ class MyHandler(BaseHTTPRequestHandler):
 
             if ctype == 'multipart/form-data' :     
 
-                # original version :     
-                '''
-                query=cgi.parse_multipart(self.rfile, pdict)
-                upfilecontent = query.get('upfile')
-                print "filecontent", upfilecontent[0]
-                '''
+
 
                 # using cgi.FieldStorage instead, see 
                 # http://stackoverflow.com/questions/1417918/time-out-error-while-creating-cgi-fieldstorage-object     
@@ -112,13 +105,7 @@ class MyHandler(BaseHTTPRequestHandler):
                 print "fullname is %s" % fullname
                 print "fullname+now is %s" % fullname+now
                 os.rename(fullname,fullname+now)
-#                os.remove(fullname)			
-#                fullname_test = fullname + '.copy'
-#                i = 0
-#                while os.path.exists( fullname_test ):
-#                    fullname_test = "%s.copy(%d)" % (fullname, i)
-#                    i += 1
-#                fullname = fullname_test
+
                 
             if not os.path.exists(fullname):
                 o=open(fullname, 'wb')
