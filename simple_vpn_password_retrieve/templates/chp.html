@@ -1,0 +1,107 @@
+
+<!Doctype html>
+<html>
+<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/pure/0.4.2/pure-min.css">
+<title>Password Retrieve</title>
+<head>
+<meta charset="UTF-8">
+<script>
+String.prototype.trim = function(){
+	return this.replace(/^\s+|\s+$/gm,'');
+};
+
+function $(id){
+	return document.getElementById(id);
+};
+
+function on_submit(){
+	var un = $("username");
+	var pwd = $("password");
+	var npwd = $("newpassword");
+	var rpwd = $("newpassword-confirm");
+	if(un.value.trim()==''){
+		alert("请填用户名");
+		un.focus();
+		return false;
+	};
+	
+	if(pwd.value.trim()==''){
+		alert("请填写当前密码");
+		pwd.focus();
+		return false;
+	};
+	/*
+	if(pwd.value.trim().length<6){
+		alert("当前密码长度小于6位");
+		pwd.focus();
+		return false;
+	};
+	*/	
+	if(npwd.value.trim()==''){
+		alert("请填写新密码");
+		npwd.focus();
+		return false;
+	};
+	if(npwd.value.trim().length<6){
+		alert("新密码长度小于6位");
+		npwd.focus();
+		return false;
+	};
+	if(pwd.value.trim() == npwd.value.trim()){
+		alert("当前密码与新密码不能一致");
+		npwd.value = "";
+		npwd.focus();
+		return false;
+	};
+	
+	if(rpwd.value.trim()==''){
+		alert("请填写新确认密码");
+		rpwd.focus();
+		return false;
+	};
+	if(rpwd.value.trim().length<6){
+		alert("新确认密码长度小于6位");
+		rpwd.focus();
+		return false;
+	};
+	if(npwd.value.trim() != rpwd.value.trim()){
+		alert("新密码2次输入不一致");
+		rpwd.value = "";
+		rpwd.focus();
+		return false;
+	};
+
+};
+</script>
+</head>
+<body>
+<form align="center" onsubmit="return on_submit()" class="pure-form pure-form-aligned" method = "post" action= "resetpwd">
+<h1>Retrieve You Password</h1>
+    <fieldset>
+        <div class="pure-control-group">
+            <label for="name">Username</label>
+            <input id="username" type="text" name="username" placeholder="Username">
+        </div>
+
+        <div class="pure-control-group">
+            <label for="password">Password</label>
+            <input id="password" type="password" name="password" placeholder="Password">
+        </div>
+	
+	<div class="pure-control-group">
+            <label for="password">New Password</label>
+            <input id="newpassword" type="password" name="newpassword" placeholder="New Password">
+        </div>
+
+	 <div class="pure-control-group">
+            <label for="password">New Password Confirm</label>
+            <input id="newpassword-confirm" type="password" name="newpassword-confirm" placeholder="New Password Confirm">
+        </div>
+
+	<div class="pure-controls">
+	        <button type="submit" class="pure-button pure-button-primary">Submit</button>
+	</div>
+    </fieldset>
+</form>
+</body>
+</html>
