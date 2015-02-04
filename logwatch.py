@@ -1,9 +1,7 @@
 #!/usr/bin/env python
-import os,sys
+import os
 posfile='/tmp/pos.txt'
-"""
-usage: python logwatch.py /tmp/logfile.log keyword
-"""
+import sys
 def PosCheck(posfile):
 	try:
 		with open(posfile,'r') as pos:
@@ -25,25 +23,41 @@ def UpdatePos(position):
 
 def LogMonitor(file, keyword):
 	with open(file,'r') as fp:
-#		print "os.path.getsize = %d ,Poscheck = %d"%(os.path.getsize(file),PosCheck(posfile))
-		if os.path.getsize(file) < PosCheck(posfile):
-			text = fp.readlines()
-			UpdatePos(fp.tell())
-		else:
-			fp.seek(PosCheck(posfile),1)
-			text = fp.readlines()
-			UpdatePos(fp.tell())
-		if text:
-			for line in text:
-				if keyword in line:
-					return line
-				else:
-					return 'not fond'
-		else:
+		text =  fp.readlines()
+		current_pos = int(fp.tell())
+		last_pos = PosCheck(posfile)
+		print 'current_pos :%s last_pos: %s '%(current_pos ,last_pos)
+		if current_pos < last_pos:
+			UpdatePos(current_pos)
+			if text:
+                        	for line in text:
+                                	if keyword in line:
+                                        	return line
+                              		else:
+                                        	return 'not fond'
+			else:
+				return 'emptyfile'	
+		elif current_pos == last_pos:
 			return 'no update'
-
-logstatus = LogMonitor(sys.argv[1],sys.argv[2])
-if logstatus == "no update" or logstatus == "not fond":
-	print 'OK'
+		else:
+			UpdatePos(current_pos)
+			orig_file=open(file,'r')
+			orig_file.seek(last_pos,1)
+			txt=orig_file.readlines()
+			if txt:
+				for line in txt:
+					if keyword in line:
+						return line
+					else:
+						return 'not fond'
+			else:
+				return 'emptyfile'
+logstatus=LogMonitor(sys.argv[1],sys.argv[2])
+if logstatus == "emptyfile":
+	print 'File is Empty'
+elif logstatus == "not fond":
+	print 'not fond keyword in File'
+elif logstatus == 'no update':
+	print 'File No Update'
 else:
-	print 'Fatal Error Appeared: \n'+logstatus
+	print 'fond keyword %s in %s'%(sys.argv[2],logstatus)
