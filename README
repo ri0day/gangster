@@ -1,17 +1,31 @@
-|-- dns                              #dns server with heathcheck
-|   |-- check.py                     #check script
-|   |-- dns-blanacer_deamon.py       #dns server in deamon mode
-|   `-- dns-server_with-thread.py    #dns server in thread mode
-|-- memcache_interface               #memcache http interface
-|   |-- cgi_memcache.py              #memcache http interface write in cgi
-|   |-- gevent_memcache.py           #memcache http interface write with gevent
-|   `-- memcache_cli.sh              #memcache interface write in bash
-|-- pylucene_build_idx.py            #pylucene build index example
-|-- pylucene_search.py               #pylucene search example
-|-- qunar.py                         #fetch lowest price fly ticket on qunar.com
-|-- upload_fileserver.py             #simple upload server write in python cgi 
-`-- backup.js                        #mongodb backup script    
- -- rate_limit_example.py            #python http request rate limit example
- -- login_portal.sh                  #ssh login portal
- -- es_log_gather.py                 #fetch log from elasticsearch
- -- logwatch.py                      #keyword detection from a log file
+
+├── README
+├── backup.js                            #mongodb backup script
+├── dns                                  #dns server write in python with heathcheck
+│   ├── DNS.conf
+│   ├── check.py
+│   ├── dns-blanacer_deamon.py
+│   └── dns-server_with-thread.py
+├── es_log_gather.py                     #log fetch in elasticsearch
+├── login_portal.sh                      #shell script login portal
+├── logwatch.py                          #keyword detection from a log file
+├── memcache_interface                   #memcache http interface
+│   ├── cgi_memcache.py
+│   ├── gevent_memcache.py
+│   └── memcache_cli.sh
+├── pylucene_build_idx.py                #python lucene simple example
+├── pylucene_search.py                    
+├── qunar.py                              #scrap qunar.com fly ticket
+├── rate_limit_example.py
+├── releasescript                         #rundeck deploy pipeline script
+│   ├── deploy
+│   ├── deploy_project_manually.sh
+│   ├── release
+│   └── rundeck_rollback_code_from_specific_timestamp_version_job.sh
+├── simple_vpn_password_retrieve          #dead simple pptpd vpn password retrieve
+│   ├── pptpd_password_change_service.py
+│   ├── pptpd_password_change_service_v2.py
+│   └── templates
+│       └── chp.html
+├── upload_fileserver.py                   #http file upload
+└── weblog_statictis.py                    #simple http log statictis
