@@ -1,0 +1,102 @@
+#!/bin/bash
+WEBS="10.100.160.4 10.100.160.8 10.100.160.10 10.100.160.11 10.100.160.53"
+TIMESTAMP=$(date +%Y%m%d-%H%M%S)
+NGINX_CONF_DIR="/usr/local/nginx/conf/"
+PHP_CONF_DIR="/data/app/php/etc/"
+free_dts_conf="/etc/freetds.conf"
+
+#project setting
+cms_ga_dir="/data/app/wwwroot/cms/ga/"
+cms_beta_dir="/data/app/wwwroot/cms/beta/"
+
+index_dir="/data/app/wwwroot/index/"
+static_dir="/data/app/wwwroot/static/"
+
+hotline_ga_dir="/data/app/wwwroot/hotline/ga/"
+hotline_beta_dir="/data/app/wwwroot/hotline/beta/"
+
+file_ga_dir="/data/app/wwwroot/file/ga/"
+file_beta_dir="/data/app/wwwroot/file/beta/"
+
+all_project_webroot="/data/app/wwwroot/"
+
+do_sync(){
+/usr/bin/rsync -e ssh -avzr --delete "$2" root@"$1":"$2"
+}
+
+backup_before_sync(){
+for web in $1
+do
+/usr/bin/ssh root@$web "/bin/cp -RH $2 ${2%/}'.'$TIMESTAMP"
+if [ $? -eq 0 ]
+	then 
+		echo "--- start ship code to $web $2 ---"
+		do_sync "$web" "$2"
+	else
+		echo "SOME ERROR OCCURRED ON $web DURDING BACKUP FILE.CHECK IT"
+fi
+done
+}
+
+. /opt/deploy
+
+#backup_before_sync "$WEBS" "$NGINX_CONF_DIR"
+#backup_before_sync "$WEBS" "$PHP_CONF_DIR"
+#backup_before_sync "$WEBS" "$all_project_webroot"
+#backup_before_sync "$WEBS" "$free_dts_conf"
+
+
+if [ $# -lt 2 ]
+then 
+	echo "usage: sync_file cms ga"
+	exit
+else
+	if [ "$1" == "cms" -a "$2" == "ga" ]
+	then
+		deploy_project cms ga
+		backup_before_sync "$WEBS" "$cms_ga_dir"
+	elif [ "$1" == "cms" -a "$2" == "beta" ] 
+	then
+		deploy_project cms ga
+		 backup_before_sync "$WEBS" "$cms_beta_dir"	
+	elif [ "$1" == "file"  -a "$2" == "ga" ]
+	then
+		deploy_project file ga
+		 backup_before_sync "$WEBS" "$file_ga_dir"
+	elif [ "$1" == "file" -a "$2" == "beta" ]
+	then
+		deploy_project file beta
+		backup_before_sync "$WEBS" "$file_beta_dir"
+	elif [ "$1" == "hotline" -a "$2" == "ga" ]
+	then
+		deploy_project hotline ga
+		backup_before_sync "$WEBS" "$hotline_ga_dir"
+	elif [ "$1" == "hotline" -a "$2" == "beta" ]
+	then
+		deploy_project hotline beta
+		backup_before_sync "$WEBS" "$hotline_beta_dir"
+	elif [ "$1" == "index" -a "$2" == "default" ]
+	then
+		deploy_index
+		backup_before_sync "$WEBS" "$index_dir"
+	elif [ "$1" == "static" -a "$2" == "ga" ]
+	then
+		echo "WE IN..............."
+		deploy_static ga
+		backup_before_sync "$WEBS" "$static_dir"
+		for web in $WEBS
+			do
+				rsync -e ssh -avzr  $index_dir/STATIC_VERSION.ga root@$web:$index_dir
+			done
+	elif [ "$1" == "static" -a "$2" == "beta" ]
+	then
+		deploy_static beta
+		backup_before_sync "$WEBS" "$static_dir"
+                for web in $WEBS
+                        do
+                                rsync -e ssh -avzr  $index_dir/STATIC_VERSION.beta root@$web:$index_dir
+                        done
+	else
+		echo "there is no project $1 "
+	fi
+fi	
