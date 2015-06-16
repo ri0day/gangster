@@ -22,8 +22,9 @@ cd $deploy_dir/$1
 version=$(cat .git/refs/heads/master)
 echo "fetch index code version: $version success"
 echo $version >version.txt
+chown www.www $deploy_dir/$1/  -R
 echo "---start sync local deploy dir to local webroot---"
-rsync  -r --delete $deploy_dir/$1/ $webroot/$1/
+rsync  -ar --delete $deploy_dir/$1/ $webroot/$1/
 echo "---sync local deploy dir to local webroot done---"
 
 do_sync "$WEBS" "$webroot/$1/"
@@ -48,7 +49,8 @@ else
 		echo "fetch index code version: $version success"
 		echo $version >version.txt
 		echo "---start sync local deploy dir to local webroot---"
-		rsync  -r --delete $deploy_dir/$1/$timestamp $webroot/$1/
+		chown www.www $deploy_dir/$1/$timestamp -R
+		rsync  -ar --delete $deploy_dir/$1/$timestamp $webroot/$1/
 		cp -a $deploy_dir/index/version/$1.beta  $webroot/index/version/
 		do_sync "$WEBS" "$webroot/$1/$timestamp/"
 		do_sync "$WEBS" "$webroot/index/version/$1.beta"
@@ -63,7 +65,8 @@ else
                 echo "fetch index code version: $version success"
                 echo $version >version.txt
                 echo "---start sync local deploy dir to local webroot---"
-                rsync  -r --delete $deploy_dir/$1/$timestamp $webroot/$1/
+		chown www.www $deploy_dir/$1/$timestamp -R
+                rsync  -ar --delete $deploy_dir/$1/$timestamp $webroot/$1/
 		cp -a $deploy_dir/index/version/$1.beta  $webroot/index/version/
 		echo "---sync local deploy dir to local webroot done---"
 		do_sync "$WEBS" "$webroot/$1/$timestamp/"
@@ -100,7 +103,7 @@ fi
 
 #1.pre deploy:create project dir on production webserver 
 
-#for host in 10.0.16.4 10.0.16.5 10.0.16.8  10.0.16.10 10.0.16.11
+#for host in 10.0.16.3 10.0.16.4 10.0.16.5 10.0.16.8  10.0.16.10 10.0.16.11
 #    do
 #         ssh $host (/bin/mkdir -p /data/app/wwwroot/touchweb;/bin/chown www.www /data/app/wwwroot/touchweb)
 #    done
@@ -113,3 +116,5 @@ fi
 
 #3. login rundeck , add job http://10.0.5.7:4440
 #4. config nginx, sync config file. reload nginx
+
+deploy_index wxadmin

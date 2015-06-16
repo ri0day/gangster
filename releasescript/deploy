@@ -22,10 +22,10 @@ cd $deploy_dir/$1
 version=$(cat .git/refs/heads/master)
 echo "fetch index code version: $version success"
 echo $version >version.txt
+chown www.www $deploy_dir/$1/  -R
 echo "---start sync local deploy dir to local webroot---"
-rsync  -r --delete $deploy_dir/$1/ $webroot/$1/
+rsync  -ar --delete $deploy_dir/$1/ $webroot/$1/
 echo "---sync local deploy dir to local webroot done---"
-
 do_sync "$WEBS" "$webroot/$1/"
 }
 
@@ -48,7 +48,8 @@ else
 		echo "fetch index code version: $version success"
 		echo $version >version.txt
 		echo "---start sync local deploy dir to local webroot---"
-		rsync  -r --delete $deploy_dir/$1/$timestamp $webroot/$1/
+		chown www.www $deploy_dir/$1/$timestamp -R
+		rsync  -ar --delete $deploy_dir/$1/$timestamp $webroot/$1/
 		cp -a $deploy_dir/index/version/$1.beta  $webroot/index/version/
 		do_sync "$WEBS" "$webroot/$1/$timestamp/"
 		do_sync "$WEBS" "$webroot/index/version/$1.beta"
@@ -63,7 +64,8 @@ else
                 echo "fetch index code version: $version success"
                 echo $version >version.txt
                 echo "---start sync local deploy dir to local webroot---"
-                rsync  -r --delete $deploy_dir/$1/$timestamp $webroot/$1/
+		chown www.www $deploy_dir/$1/$timestamp -R
+                rsync  -ar --delete $deploy_dir/$1/$timestamp $webroot/$1/
 		cp -a $deploy_dir/index/version/$1.beta  $webroot/index/version/
 		echo "---sync local deploy dir to local webroot done---"
 		do_sync "$WEBS" "$webroot/$1/$timestamp/"
@@ -141,6 +143,13 @@ else
 	elif [ "$1" == "crm" -a "$2" == "default" ]
         then
                 deploy_index_style crm
+
+	elif [ "$1" == "download" -a "$2" == "default" ]
+        then
+                deploy_index_style download
+        elif [ "$1" == "wxadmin" -a "$2" == "default" ]
+        then
+                deploy_index_style wxadmin
 	
 	elif [ "$1" == "news" -a "$2" == "beta_to_beta" ]
         then
@@ -160,6 +169,24 @@ else
         elif [ "$1" == "sapi" -a "$2" == "master_to_ga" ]
         then
                 deploy_project sapi master_to_ga
+        elif [ "$1" == "touchweb" -a "$2" == "beta_to_beta" ]
+        then
+                deploy_project touchweb beta_to_beta
+        elif [ "$1" == "touchweb" -a "$2" == "master_to_beta" ]
+        then
+                deploy_project touchweb master_to_beta
+        elif [ "$1" == "touchweb" -a "$2" == "master_to_ga" ]
+        then
+                deploy_project touchweb master_to_ga
+        elif [ "$1" == "web" -a "$2" == "beta_to_beta" ]
+        then
+                deploy_project web beta_to_beta
+        elif [ "$1" == "web" -a "$2" == "master_to_beta" ]
+        then
+                deploy_project web master_to_beta
+        elif [ "$1" == "web" -a "$2" == "master_to_ga" ]
+        then
+                deploy_project web master_to_ga
 	
 	else
 		echo "there is no project $1"
