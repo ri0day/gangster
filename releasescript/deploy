@@ -59,7 +59,7 @@ else
 		git clone  git@git.ipo.com:dev1/$1.git $timestamp --recursive
                 cd $timestamp
 		echo "$timestamp" > $deploy_dir/index/version/$1.beta
-		echo "$timestamp" > $deploy_dir/index/version/$1.ga
+		#echo "$timestamp" > $deploy_dir/index/version/$1.ga
                 version=$(cat .git/refs/heads/master)
                 echo "fetch index code version: $version success"
                 echo $version >version.txt
@@ -71,7 +71,14 @@ else
 		do_sync "$WEBS" "$webroot/$1/$timestamp/"
 		do_sync "$WEBS" "$webroot/index/version/$1.beta"
 	elif [[ "$2" == "master_to_ga" ]]
-	then
+	then    
+                if [ -f "$deploy_dir/index/version/$1.beta" ] 
+                 then
+                      cat "$deploy_dir/index/version/$1.beta" > "$deploy_dir/index/version/$1.ga"
+                 else
+                      echo "no beta version for ga : $1"
+                      exit
+                fi
 		if [ -f "$deploy_dir/index/version/$1.ga" ]
 		then
 			v="$(cat $deploy_dir/index/version/$1.ga)"
@@ -187,6 +194,16 @@ else
         elif [ "$1" == "web" -a "$2" == "master_to_ga" ]
         then
                 deploy_project web master_to_ga
+
+        elif [ "$1" == "crm2" -a "$2" == "beta_to_beta" ]
+        then
+                deploy_project crm2 beta_to_beta
+        elif [ "$1" == "crm2" -a "$2" == "master_to_beta" ]
+        then
+                deploy_project crm2 master_to_beta
+        elif [ "$1" == "crm2" -a "$2" == "master_to_ga" ]
+        then
+                deploy_project crm2 master_to_ga
 	
 	else
 		echo "there is no project $1"
