@@ -22,3 +22,11 @@ def zeros(n):
     return count
 
 print zeros(12)
+
+"""
+the math way ,really think out of box,smart
+
+def zeros(n):
+  x = n/5
+  return x+zeros(x) if x else 0
+"""
