@@ -45,6 +45,5 @@ class Ngx_Conf_Summary(object):
 
 
 ngx_conf=Ngx_Conf_Summary('/tmp/2.vhost')
-ngx_conf.summary()
-print ngx_conf.r['server_names']
+print ngx_conf.summary()
 
