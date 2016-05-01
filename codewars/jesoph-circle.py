@@ -9,6 +9,6 @@ def solve(n,m):
         print list
     return list[0] 
 
-#print solve(41,3)
+print solve(41,3)
 
 
