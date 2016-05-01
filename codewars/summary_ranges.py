@@ -1,5 +1,5 @@
 def summary_ranges(nums):
-    if len(sums) == 0:
+    if len(nums) == 0:
         return []
     lst = []
     start = end  = nums[0]
