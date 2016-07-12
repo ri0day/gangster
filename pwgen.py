@@ -11,5 +11,5 @@ def generate_password(length):
 howmany = 1
 length = 12
 for i in range(howmany):
-    print str(generate_password(length))
+    print str(generate_password(length)).strip()
 
